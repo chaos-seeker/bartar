@@ -6,7 +6,7 @@ export default function Layout(props: PropsWithChildren) {
   return (
     <>
       <Header />
-      <main className='py-6'>{props.children}</main>
+      <main>{props.children}</main>
       <Footer />
     </>
   );
