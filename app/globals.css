@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --text-zsp: 11px;
+  --text-xsp: 13px;
+  --text-smp: 15px;
+  --text-mdp: 17px;
+  --font-sans: var(--font-archivo);
+  --color-primary-900: #1a144f;
+  --color-primary-800: #2a2188;
+  --color-primary-700: #3427ac;
+  --color-primary-600: #4a32e3;
+  --color-primary-500: #534df6;
+  --color-primary-400: #6f73f7;
+  --color-primary-300: #9aa4f9;
+  --color-primary-200: #bfc8fb;
+  --color-primary-100: #dceffd;
+  --color-primary-50: #ebf0fe;
+  --color-success-300: #0a5d21;
+  --color-success-200: #097224;
+  --color-success-100: #049228;
+  --color-success-50: #28e757;
+  --color-success-25: #93f3aa;
+  --color-success-0: #edfaf0;
+  --color-error-300: #861c13;
+  --color-error-200: #b22e23;
+  --color-error-100: #d54033;
+  --color-error-50: #ff8075;
+  --color-error-25: #fcecea;
+  --color-error-0: #fdf4f3;
+  --color-warning-300: #ca8a04;
+  --color-warning-200: #d29f00;
+  --color-warning-100: #e99f00;
+  --color-warning-50: #fde047;
+  --color-warning-25: #f4dfb2;
+  --color-warning-0: #fff7ea;
+  --color-orange-50: #fa620e;
+  --color-orange-20: #ffece1;
+  --color-yellow-50: #eebd1d;
+  --color-yellow-25: #f8e5a5;
+  --color-greyscale-900: #0c0a20;
+  --color-greyscale-800: #18162b;
+  --color-greyscale-700: #242336;
+  --color-greyscale-600: #3d3b4d;
+  --color-greyscale-500: #555463;
+  --color-greyscale-400: #6d6c79;
+  --color-greyscale-300: #85848f;
+  --color-greyscale-200: #9e9da6;
+  --color-greyscale-100: #b6b5bc;
+  --color-greyscale-50: #ceced2;
+  --color-greyscale-25: #e4e3e5;
+  --color-greyscale-15: #f3f3f4;
+  --color-greyscale-10: #f9f9f9;
+  --color-primary: var(--color-primary-600);
+  --color-success: var(--color-success-100);
+  --color-error: var(--color-error-100);
+  --color-warning: var(--color-warning-100);
+  --color-orange: var(--color-orange-50);
+  --color-yellow: var(--color-yellow-50);
+  --color-greyscale: var(--color-greyscale-50);
+}
+
+@utility container {
+  @apply mx-auto px-4;
+}
+
+@layer base {
+  * {
+    @apply border-greyscale-50;
+  }
+  body {
+    @apply flex min-h-dvh flex-col overflow-x-hidden;
+  }
+  main {
+    @apply h-full flex-1;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+}
