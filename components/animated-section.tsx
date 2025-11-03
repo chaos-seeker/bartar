@@ -19,7 +19,7 @@ export const AnimatedSection = ({
   direction = 'up',
 }: AnimatedSectionProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   const directionOffset = {
     up: { y: 40 },
@@ -35,15 +35,11 @@ export const AnimatedSection = ({
         opacity: 0,
         ...directionOffset[direction],
       }}
-      animate={
-        isInView
-          ? {
-              opacity: 1,
-              x: 0,
-              y: 0,
-            }
-          : {}
-      }
+      animate={{
+        opacity: isInView ? 1 : 0,
+        x: 0,
+        y: 0,
+      }}
       transition={{
         duration,
         delay,
@@ -55,4 +51,3 @@ export const AnimatedSection = ({
     </motion.div>
   );
 };
-
