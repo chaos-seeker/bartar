@@ -39,7 +39,7 @@ export const Hero = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <Link
-                href="/"
+                href="/explore"
                 className="bg-blur-sm mt-3 flex w-[200px] items-center justify-center gap-3 bg-white/20 p-3 text-white"
               >
                 <ShoppingBagIcon className="size-5" />
