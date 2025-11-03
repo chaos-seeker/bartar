@@ -10,14 +10,7 @@ export function Header() {
     <header>
       <div className="container flex flex-col gap-4 border-b py-5 lg:flex-row">
         <div className="flex w-full items-center justify-between">
-          <Link href="/">
-            <Image
-              src="/images/layout/logo.png"
-              alt="logo"
-              width={100}
-              height={100}
-            />
-          </Link>
+          <Logo />
           <div className="hidden lg:block">
             <Search />
           </div>
@@ -34,6 +27,19 @@ export function Header() {
     </header>
   );
 }
+
+const Logo = () => {
+  return (
+    <Link href="/">
+      <Image
+        src="/images/layout/header-logo.png"
+        alt="logo"
+        width={100}
+        height={100}
+      />
+    </Link>
+  );
+};
 
 const Cart = () => {
   const [cartCount, setCartCount] = useState(0);
@@ -69,16 +75,21 @@ const Favorite = () => {
 
 const Profile = () => {
   return (
-    <Link href="/auth.login" className="flex hover:border-primary flex gap-1 group relative flex size-11 lg:w-auto lg:h-11 items-center justify-center rounded-full border p-2 transition-all">
+    <Link
+      href="/auth.login"
+      className="hover:border-primary group relative flex size-11 items-center justify-center gap-1 rounded-full border p-2 transition-all lg:h-11 lg:w-auto"
+    >
       <UserIcon className="text-greyscale-900 group-hover:text-primary size-5.5" />
-      <p className="font-medium hidden lg:block group-hover:text-primary">login/register</p>
+      <p className="group-hover:text-primary hidden font-medium lg:block">
+        login/register
+      </p>
     </Link>
   );
 };
 
 const Search = () => {
   return (
-    <div className="focus-within:border-primary lg:w-[400px] flex h-12 items-center justify-center rounded-full border px-3 px-3.5 transition-all">
+    <div className="focus-within:border-primary flex h-12 items-center justify-center rounded-full border px-3 px-3.5 transition-all lg:w-[400px]">
       <input
         type="text"
         placeholder="search products"
