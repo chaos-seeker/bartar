@@ -89,7 +89,9 @@ const Profile = () => {
   const user = useKillua(userSlice);
   const isAuthenticated = user.selectors.isAuthenticated();
   const username = user.selectors.getUsername();
-  
+
+  if (!user.isReady) return; 
+
   return (
     <Link
       href={isAuthenticated ? '/profile' : '/auth'}

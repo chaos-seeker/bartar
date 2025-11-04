@@ -42,10 +42,10 @@ export const Form = () => {
   };
 
   return (
-    <section className="container flex h-dvh items-center justify-center">
+    <section className="container flex h-dvh items-center justify-center bg-greyscale-10">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto w-full max-w-sm space-y-4 border border-gray-200 p-4"
+        className="mx-auto w-full max-w-sm space-y-4 bg-white p-4"
       >
         <Controller
           control={form.control}
