@@ -8,6 +8,7 @@ import { PropsWithChildren } from 'react';
 import { usePathname } from 'next/navigation';
 import LayouDashboard from '@/containers/layout/dashboard';
 import { Providers } from './providers';
+import { ModalWelcome } from '@/containers/layout/base/modal-welcome';
 
 const archivo = Archivo({
   variable: '--font-archivo',
@@ -30,7 +31,10 @@ export default function RootLayout(props: PropsWithChildren) {
           ) : pathname.startsWith('/dashboard') ? (
             <LayouDashboard>{props.children}</LayouDashboard>
           ) : (
-            <LayoutBase>{props.children}</LayoutBase>
+            <LayoutBase>
+              <ModalWelcome />
+              {props.children}
+            </LayoutBase>
           )}
         </Providers>
       </body>
