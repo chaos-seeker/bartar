@@ -52,8 +52,8 @@ export const Gadget = () => {
               </p>
             </div>
             <Link
-              href="/gadget"
-              className="inline-flex w-fit items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black shadow-sm transition-all hover:shadow-md sm:rounded-xl sm:px-7 sm:py-3.5 sm:text-[0.95rem] lg:px-6 lg:py-3 lg:text-sm"
+              href="/explore"
+              className="inline-flex w-fit items-center gap-2 bg-white px-5 py-2.5 text-sm font-semibold text-black transition-all sm:px-7 sm:py-3.5 sm:text-[0.95rem] lg:px-6 lg:py-3 lg:text-sm"
             >
               View all
               <ArrowRight className="size-4 sm:size-5" />
