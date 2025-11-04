@@ -87,12 +87,12 @@ const Favorite = () => {
 const Profile = () => {
   return (
     <Link
-      href="/auth.login"
-      className="hover:border-primary group relative flex size-11 items-center justify-center gap-1 rounded-full border p-2 transition-all lg:h-11 lg:w-auto"
+      href="/auth"
+      className="hover:border-primary group relative flex size-11 items-center justify-center gap-1 rounded-full border py-2 lg:px-4 transition-all lg:h-11 lg:w-auto"
     >
       <UserIcon className="text-greyscale-900 group-hover:text-primary size-5.5" />
       <p className="group-hover:text-primary hidden font-medium lg:block">
-        login/register
+        login
       </p>
     </Link>
   );

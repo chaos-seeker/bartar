@@ -6,7 +6,7 @@ import { Gadget } from '@/containers/home/gadget';
 import { Home as HomeSection } from '@/containers/home/home';
 import { AnimatedSection } from '@/components/animated-section';
 
-export default function Home() {
+export default function Page() {
   return (
     <>
       <AnimatedSection>

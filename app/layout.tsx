@@ -25,7 +25,9 @@ export default function RootLayout(props: PropsWithChildren) {
       </head>
       <body className={archivo.variable}>
         <Providers>
-          {pathname.startsWith('/dashboard') ? (
+          {pathname.startsWith('/auth') ? (
+            props.children
+          ) : pathname.startsWith('/dashboard') ? (
             <LayouDashboard>{props.children}</LayouDashboard>
           ) : (
             <LayoutBase>{props.children}</LayoutBase>
