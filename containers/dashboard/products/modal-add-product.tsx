@@ -8,44 +8,61 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
+import { addProduct } from '@/actions/dashboard/products/add-product';
+import { toast } from 'react-hot-toast';
+import { Loading } from '@/components/loading';
 
 const productSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  price: z.string().min(1, 'Price is required'),
+  image: z.instanceof(File, { message: 'image is required' }),
+  title: z.string().min(1, 'title is required'),
+  price: z.string().min(1, 'price is required'),
   discount: z.string().optional(),
-  stock: z.string().min(1, 'Stock is required'),
+  stock: z.string().min(1, 'stock is required'),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
 
 export const ModalAddProduct = () => {
   const modalAddProduct = useModal('add-product');
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-
+  const [isDisabledSubmitBtn, setIsDisabledSubmitBtn] = useState(false);
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
-    defaultValues: {
-      title: '',
-      price: '',
-      discount: '',
-      stock: '',
-    },
   });
-
   const handleClose = () => {
     modalAddProduct.hide();
     form.reset();
-    setSelectedImage(null);
-    setImagePreview('');
   };
-
   const handleImageChange = (file: File | null) => {
-    setSelectedImage(file);
+    if (!file) return;
+    form.setValue('image', file!);
   };
-
-  const onSubmit = (data: ProductFormData) => {
-    // ...
+  const onSubmit = async (data: ProductFormData) => {
+    setIsDisabledSubmitBtn(true);
+    try {
+      let imageBase64: string | null = null;
+      if (data.image) {
+        const reader = new FileReader();
+        imageBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(data.image);
+        });
+      }
+      const response = await addProduct({
+        _id: '',
+        title: data.title,
+        price: data.price,
+        discount: data.discount,
+        stock: data.stock,
+        image: imageBase64,
+      });
+      toast.success(response.message);
+      handleClose();
+    } catch (error: any) {
+      toast.error(error?.message);
+    } finally {
+      setIsDisabledSubmitBtn(false);
+    }
   };
 
   return (
@@ -68,10 +85,13 @@ export const ModalAddProduct = () => {
             : 'pointer-events-none scale-75 opacity-0',
         )}
       >
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
           <FormImage
             label="image"
-            value={selectedImage}
+            value={form.watch('image')}
             onChange={handleImageChange}
           />
           <Controller
@@ -80,7 +100,7 @@ export const ModalAddProduct = () => {
             render={({ field }) => (
               <FormInput
                 label="title"
-                placeholder="Enter product title"
+                placeholder="enter product title"
                 {...field}
                 error={form.formState.errors.title?.message}
               />
@@ -93,7 +113,7 @@ export const ModalAddProduct = () => {
               <FormInput
                 label="price"
                 type="number"
-                placeholder="Enter price"
+                placeholder="enter price"
                 {...field}
                 error={form.formState.errors.price?.message}
               />
@@ -106,7 +126,7 @@ export const ModalAddProduct = () => {
               <FormInput
                 label="discount"
                 type="number"
-                placeholder="Enter discount percentage"
+                placeholder="enter discount percentage"
                 {...field}
                 error={form.formState.errors.discount?.message}
               />
@@ -119,7 +139,7 @@ export const ModalAddProduct = () => {
               <FormInput
                 label="stock"
                 type="number"
-                placeholder="Enter stock quantity"
+                placeholder="enter stock quantity"
                 {...field}
                 error={form.formState.errors.stock?.message}
               />
@@ -128,16 +148,22 @@ export const ModalAddProduct = () => {
           <div className="mt-4 flex gap-3">
             <button
               type="submit"
-              className="bg-primary hover:bg-primary/90 flex-1 px-4 py-3 text-white transition-colors"
+              disabled={isDisabledSubmitBtn}
+              className="bg-primary hover:bg-primary/90 flex-1 px-4 py-3 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Add Product
+              {isDisabledSubmitBtn ? (
+                <Loading className="[&_span]:bg-white" />
+              ) : (
+                'add product'
+              )}
             </button>
             <button
               type="button"
               onClick={handleClose}
-              className="text-error border-error hover:bg-error flex-1 border bg-white px-4 py-3 transition-colors hover:text-white"
+              disabled={isDisabledSubmitBtn}
+              className="text-error border-error hover:bg-error flex-1 border bg-white px-4 py-3 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Cancel
+              cancel
             </button>
           </div>
         </form>

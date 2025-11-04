@@ -7,6 +7,7 @@ interface FormImageProps {
   label?: string;
   value?: File | null;
   onChange?: (file: File | null) => void;
+  existingImage?: string;
 }
 
 export const FormImage = (props: FormImageProps) => {
@@ -18,10 +19,12 @@ export const FormImage = (props: FormImageProps) => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(props.value);
+    } else if (props.existingImage) {
+      setImagePreview(props.existingImage);
     } else {
       setImagePreview('');
     }
-  }, [props.value]);
+  }, [props.value, props.existingImage]);
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     props.onChange?.(file);
@@ -30,7 +33,9 @@ export const FormImage = (props: FormImageProps) => {
   return (
     <div className="flex flex-col gap-2">
       {props.label && (
-        <label className="text-sm font-semibold text-gray-900">{props.label}</label>
+        <label className="text-sm font-semibold text-gray-900">
+          {props.label}
+        </label>
       )}
       <label className="cursor-pointer">
         <div className="hover:border-primary relative aspect-square w-full overflow-hidden border-2 border-dashed border-gray-300 bg-gray-50 transition-colors">
@@ -53,9 +58,6 @@ export const FormImage = (props: FormImageProps) => {
           className="hidden"
         />
       </label>
-      {props.value && (
-        <p className="text-center text-sm text-gray-600">{props.value.name}</p>
-      )}
     </div>
   );
 };

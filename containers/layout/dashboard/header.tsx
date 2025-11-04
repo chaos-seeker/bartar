@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ModalAddProduct } from './modal-add-product';
 import { useModal } from '@/hooks/modal';
 
 export function Header() {
@@ -13,7 +12,6 @@ export function Header() {
           <Logo />
         </div>
         <AddProduct />
-        <ModalAddProduct />
       </div>
     </header>
   );
