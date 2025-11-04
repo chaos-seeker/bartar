@@ -58,11 +58,11 @@ export const OfferProducts = () => {
   };
 
   if (fetchProducts.isLoading) {
-    return(
-      <div className='flex justify-center my-10 items-center'>
-      <Loading /> 
-    </div>
-    )
+    return (
+      <div className="my-10 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
   }
 
   return (

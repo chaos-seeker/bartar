@@ -8,6 +8,10 @@ import type { Swiper as SwiperType } from 'swiper';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/actions/dashboard/products/get-products';
+import { TProduct } from '@/types/product';
+import { Loading } from '@/components/loading';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -16,109 +20,23 @@ export const Gadget = () => {
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
-  const gadgetProducts = [
-    {
-      id: 'g7',
-      title: 'YSL Black Opium',
-      image: '/images/global/product-7.png',
-      price: 95.0,
-      originalPrice: 130.0,
-      rating: 5,
-      soldCount: 2450,
-      discount: 27,
-    },
-    {
-      id: 'g3',
-      title: 'Calvin Klein Eternity',
-      image: '/images/global/product-3.png',
-      price: 33.56,
-      rating: 5,
-      soldCount: 1840,
-    },
-    {
-      id: 'g10',
-      title: 'Gucci Bloom',
-      image: '/images/global/product-10.png',
-      price: 85.0,
-      originalPrice: 115.0,
-      rating: 4,
-      soldCount: 1560,
-      discount: 26,
-    },
-    {
-      id: 'g5',
-      title: 'Dior Sauvage',
-      image: '/images/global/product-5.png',
-      price: 89.0,
-      originalPrice: 120.0,
-      rating: 5,
-      soldCount: 2890,
-      discount: 26,
-    },
-    {
-      id: 'g1',
-      title: 'Dossier Ambery Vanilla',
-      image: '/images/global/product-1.png',
-      price: 75.0,
-      rating: 5,
-      soldCount: 662,
-    },
-    {
-      id: 'g9',
-      title: 'Tom Ford Orchid',
-      image: '/images/global/product-9.png',
-      price: 145.0,
-      originalPrice: 195.0,
-      rating: 5,
-      soldCount: 1320,
-      discount: 26,
-    },
-    {
-      id: 'g2',
-      title: 'Marc Jacobs Daisy',
-      image: '/images/global/product-2.png',
-      price: 41.5,
-      originalPrice: 75.0,
-      rating: 5,
-      soldCount: 2550,
-      discount: 45,
-    },
-    {
-      id: 'g6',
-      title: 'Versace Eros',
-      image: '/images/global/prroduct-6.png',
-      price: 68.0,
-      originalPrice: 95.0,
-      rating: 4,
-      soldCount: 1670,
-      discount: 28,
-    },
-    {
-      id: 'g4',
-      title: 'Chanel Coco',
-      image: '/images/global/product-4.png',
-      price: 125.0,
-      originalPrice: 165.0,
-      rating: 5,
-      soldCount: 3210,
-      discount: 24,
-    },
-    {
-      id: 'g8',
-      title: 'Armani Acqua Di Gio',
-      image: '/images/global/product-8.png',
-      price: 79.0,
-      originalPrice: 110.0,
-      rating: 5,
-      soldCount: 1980,
-      discount: 28,
-    },
-  ];
+  const fetchProducts = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  });
+
+  if (fetchProducts.isLoading) {
+    return (
+      <div className="my-10 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <section className="bg-white">
       <div className="container space-y-6 sm:space-y-10 lg:grid lg:grid-cols-2 lg:gap-10">
-        <div className="relative h-[400px] overflow-hidden bg-greyscale-10 px-6 py-8 sm:h-[500px] sm:px-12 sm:py-10 lg:h-[600px] lg:px-16 lg:py-14">
+        <div className="bg-greyscale-10 relative h-[400px] overflow-hidden px-6 py-8 sm:h-[500px] sm:px-12 sm:py-10 lg:h-[600px] lg:px-16 lg:py-14">
           <div className="absolute top-8 left-6 z-30 inline-block bg-[#2C3E50] px-4 py-2 text-[10px] font-semibold tracking-[0.15em] text-white uppercase sm:top-10 sm:left-12 sm:px-5 sm:py-2.5 sm:text-xs lg:top-14 lg:left-16">
             Smart Tech, Smarter Savings
           </div>
@@ -219,10 +137,10 @@ export const Gadget = () => {
                 spaceBetween: 24,
               },
             }}
-            className="w-full !pb-4"
+            className="w-full pb-4"
           >
-            {gadgetProducts.map((product) => (
-              <SwiperSlide key={product.id}>
+            {fetchProducts.data?.map((product: TProduct) => (
+              <SwiperSlide key={product._id}>
                 <ProductCard {...product} />
               </SwiperSlide>
             ))}
