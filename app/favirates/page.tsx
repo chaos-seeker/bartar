@@ -1,4 +1,5 @@
-import { Favirates } from '@/containers/routes/favirates/favorites';
+import { Favorites } from '@/containers/routes/favirates/favorites';
+
 export default function Page() {
-  return <Favirates />;
+  return <Favorites />;
 }

@@ -2,10 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingBag, SearchIcon, UserIcon } from 'lucide-react';
-import { useState, FormEvent, useEffect } from 'react';
+import { Heart, ShoppingBag, UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 import { useKillua } from 'killua';
 import { cartSlice } from '@/slices/cart';
 import { favoriteSlice } from '@/slices/favorite';
