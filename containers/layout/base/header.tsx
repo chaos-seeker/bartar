@@ -10,6 +10,7 @@ import { useKillua } from 'killua';
 import { cartSlice } from '@/slices/cart';
 import { favoriteSlice } from '@/slices/favorite';
 import { userSlice } from '@/slices/user';
+import toast from 'react-hot-toast';
 
 export function Header() {
   return (
@@ -72,7 +73,7 @@ const Favorite = () => {
 
   return (
     <Link
-      href="/profile/favorites"
+      href="/favorites"
       className="hover:border-primary group relative flex size-11 items-center justify-center rounded-full border p-0.5 transition-all"
     >
       <Heart className="text-greyscale-900 group-hover:text-primary size-5.5" />
@@ -89,19 +90,26 @@ const Profile = () => {
   const user = useKillua(userSlice);
   const isAuthenticated = user.selectors.isAuthenticated();
   const username = user.selectors.getUsername();
-
+  const router = useRouter();
   if (!user.isReady) return; 
 
   return (
-    <Link
-      href={isAuthenticated ? '/profile' : '/auth'}
+    <button
+      onClick={() => {
+        if (isAuthenticated) {
+          user.reducers.clearUser();
+          toast.success('logged out successfully');
+        } else {
+          router.push('/auth');
+        }
+      }}  
       className="hover:border-primary group relative flex size-11 items-center justify-center gap-1 rounded-full border py-2 lg:px-4 transition-all lg:h-11 lg:w-auto"
     >
       <UserIcon className="text-greyscale-900 group-hover:text-primary size-5.5" />
       <p className="group-hover:text-primary hidden font-medium lg:block">
-        {isAuthenticated ? username : 'login'}
+        {isAuthenticated ? 'logout' : 'login'}
       </p>
-    </Link>
+    </button>
   );
 };
 
