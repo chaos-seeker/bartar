@@ -2,8 +2,6 @@
 
 ## [review online](https://toranj.vercel.app/)
 
-## [backend repo](https://github.com/mohammadkh24/Restaurant)
-
 ---
 
 ## web development technologies
