@@ -6,18 +6,14 @@ import { TProduct } from '@/types/product';
 import { useModal } from '@/hooks/modal';
 import { useQueryState } from 'nuqs';
 import { Edit, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Loading } from '@/components/loading';
 
 export const ListProducts = () => {
-  const [products, setProducts] = useState<TProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    getProducts().then((data) => {
-      setProducts(data);
-      setIsLoading(false);
-    });
-  }, []);
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  });
 
   if (isLoading) {
     return (

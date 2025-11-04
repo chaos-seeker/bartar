@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { addProduct } from '@/actions/dashboard/products/add-product';
 import { toast } from 'react-hot-toast';
 import { Loading } from '@/components/loading';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const productSchema = z.object({
   image: z.instanceof(File, { message: 'image is required' }),
@@ -24,9 +25,38 @@ type ProductFormData = z.infer<typeof productSchema>;
 
 export const ModalAddProduct = () => {
   const modalAddProduct = useModal('add-product');
-  const [isDisabledSubmitBtn, setIsDisabledSubmitBtn] = useState(false);
+  const queryClient = useQueryClient();
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
+  });
+  const addProductMutation = useMutation({
+    mutationFn: async (data: ProductFormData) => {
+      let imageBase64: string | null = null;
+      if (data.image) {
+        const reader = new FileReader();
+        imageBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(data.image);
+        });
+      }
+      return addProduct({
+        _id: '',
+        title: data.title,
+        price: data.price,
+        discount: data.discount,
+        stock: data.stock,
+        image: imageBase64,
+      });
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      handleClose();
+    },
+    onError: (error: any) => {
+      toast.error(error?.message);
+    },
   });
   const handleClose = () => {
     modalAddProduct.hide();
@@ -37,32 +67,7 @@ export const ModalAddProduct = () => {
     form.setValue('image', file!);
   };
   const onSubmit = async (data: ProductFormData) => {
-    setIsDisabledSubmitBtn(true);
-    try {
-      let imageBase64: string | null = null;
-      if (data.image) {
-        const reader = new FileReader();
-        imageBase64 = await new Promise<string>((resolve, reject) => {
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(data.image);
-        });
-      }
-      const response = await addProduct({
-        _id: '',
-        title: data.title,
-        price: data.price,
-        discount: data.discount,
-        stock: data.stock,
-        image: imageBase64,
-      });
-      toast.success(response.message);
-      handleClose();
-    } catch (error: any) {
-      toast.error(error?.message);
-    } finally {
-      setIsDisabledSubmitBtn(false);
-    }
+    addProductMutation.mutate(data);
   };
 
   return (
@@ -148,10 +153,10 @@ export const ModalAddProduct = () => {
           <div className="mt-4 flex gap-3">
             <button
               type="submit"
-              disabled={isDisabledSubmitBtn}
+              disabled={addProductMutation.isPending}
               className="bg-primary hover:bg-primary/90 flex-1 px-4 py-3 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isDisabledSubmitBtn ? (
+              {addProductMutation.isPending ? (
                 <Loading className="[&_span]:bg-white" />
               ) : (
                 'add product'
@@ -160,7 +165,7 @@ export const ModalAddProduct = () => {
             <button
               type="button"
               onClick={handleClose}
-              disabled={isDisabledSubmitBtn}
+              disabled={addProductMutation.isPending}
               className="text-error border-error hover:bg-error flex-1 border bg-white px-4 py-3 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               cancel

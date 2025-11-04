@@ -7,13 +7,14 @@ import { FormImage } from '@/components/form-image';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { updateProduct } from '@/actions/dashboard/products/update-product';
 import { getProduct } from '@/actions/dashboard/products/get-product';
 import { toast } from 'react-hot-toast';
 import { Loading } from '@/components/loading';
 import { useQueryState } from 'nuqs';
 import { Edit } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const productSchema = z.object({
   image: z.instanceof(File).optional().or(z.string()),
@@ -28,8 +29,7 @@ type ProductFormData = z.infer<typeof productSchema>;
 export const ModalEditProduct = () => {
   const modalEditProduct = useModal('edit-product');
   const [productId, setProductId] = useQueryState('productId');
-  const [isDisabledSubmitBtn, setIsDisabledSubmitBtn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -39,36 +39,24 @@ export const ModalEditProduct = () => {
       stock: '',
     },
   });
+  const { data: product, isLoading } = useQuery({
+    queryKey: ['product', productId],
+    queryFn: () => getProduct(productId!),
+    enabled: !!productId && modalEditProduct.isShow,
+  });
   useEffect(() => {
-    if (modalEditProduct.isShow && productId) {
-      setIsLoading(true);
-      getProduct(productId).then((product: any) => {
-        if (product) {
-          form.reset({
-            title: product.title || '',
-            price: String(product.price || ''),
-            discount: product.discount ? String(product.discount) : '',
-            stock: String(product.stock || ''),
-            image: product.image || '',
-          });
-        }
-        setIsLoading(false);
+    if (product) {
+      form.reset({
+        title: product.title || '',
+        price: String(product.price || ''),
+        discount: product.discount ? String(product.discount) : '',
+        stock: String(product.stock || ''),
+        image: product.image || '',
       });
     }
-  }, [modalEditProduct.isShow, productId, form]);
-  const handleClose = () => {
-    modalEditProduct.hide();
-    form.reset();
-    setProductId(null);
-  };
-  const handleImageChange = (file: File | null) => {
-    if (file) {
-      form.setValue('image', file);
-    }
-  };
-  const onSubmit = async (data: ProductFormData) => {
-    setIsDisabledSubmitBtn(true);
-    try {
+  }, [product, form]);
+  const updateProductMutation = useMutation({
+    mutationFn: async (data: ProductFormData) => {
       let imageBase64: string | null = null;
       if (data.image instanceof File) {
         const reader = new FileReader();
@@ -80,22 +68,41 @@ export const ModalEditProduct = () => {
       } else if (typeof data.image === 'string') {
         imageBase64 = data.image;
       }
-      const response = await updateProduct(productId!, {
+      return updateProduct(productId!, {
         title: data.title,
         price: data.price,
         discount: data.discount,
         stock: data.stock,
         image: imageBase64,
       });
+    },
+    onSuccess: (response) => {
       toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['product', productId] });
       handleClose();
-    } catch (error: any) {
-      toast.error(error?.message);
-    } finally {
-      setIsDisabledSubmitBtn(false);
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Failed to update product');
+    },
+  });
+  const handleClose = () => {
+    modalEditProduct.hide();
+    form.reset();
+    setProductId(null);
+  };
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      form.setValue('image', file);
     }
   };
-
+  const onSubmit = async (data: ProductFormData) => {
+    if (!productId) {
+      toast.error('Product ID is missing');
+      return;
+    }
+    updateProductMutation.mutate(data);
+  };
   const currentImage = form.watch('image');
 
   return (
@@ -189,12 +196,12 @@ export const ModalEditProduct = () => {
             <div className={cn('mt-4 flex gap-3')}>
               <button
                 type="submit"
-                disabled={isDisabledSubmitBtn}
+                disabled={updateProductMutation.isPending}
                 className={cn(
                   'bg-primary hover:bg-primary/90 flex-1 px-4 py-3 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50',
                 )}
               >
-                {isDisabledSubmitBtn ? (
+                {updateProductMutation.isPending ? (
                   <Loading className={cn('[&_span]:bg-white')} />
                 ) : (
                   'update product'
@@ -203,7 +210,7 @@ export const ModalEditProduct = () => {
               <button
                 type="button"
                 onClick={handleClose}
-                disabled={isDisabledSubmitBtn}
+                disabled={updateProductMutation.isPending}
                 className={cn(
                   'text-error border-error hover:bg-error flex-1 border bg-white px-4 py-3 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-50',
                 )}
