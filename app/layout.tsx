@@ -1,29 +1,36 @@
-import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
-import "./globals.css";
-import Layout from "@/containers/layout";
+'use client';
+
+import type { Metadata } from 'next';
+import { Archivo } from 'next/font/google';
+import './globals.css';
+import LayoutBase from '@/containers/layout/base';
+import { PropsWithChildren } from 'react';
+import { usePathname } from 'next/navigation';
+import LayouDashboard from '@/containers/layout/dashboard';
+import { Providers } from './providers';
 
 const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
+  variable: '--font-archivo',
+  subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: "bartar",
-  description: "e-commerce website",
-};
+export default function RootLayout(props: PropsWithChildren) {
+  const pathname = usePathname();
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
   return (
     <html lang="en">
-      <body
-        className={`${archivo.variable} antialiased`}
-      >
-        <Layout>{children}</Layout>
+      <head>
+        <title>bartar</title>
+        <meta name="description" content="e-commerce website" />
+      </head>
+      <body className={archivo.variable}>
+        <Providers>
+          {pathname.startsWith('/dashboard') ? (
+            <LayouDashboard>{props.children}</LayouDashboard>
+          ) : (
+            <LayoutBase>{props.children}</LayoutBase>
+          )}
+        </Providers>
       </body>
     </html>
   );

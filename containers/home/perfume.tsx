@@ -119,7 +119,7 @@ export const Perfume = () => {
     <section className="bg-white">
       <div className="container space-y-6 sm:space-y-10 lg:grid lg:grid-cols-2 lg:gap-10">
         <div className="relative h-[400px] overflow-hidden bg-[#EDE5D8] px-6 py-8 sm:h-[500px] sm:px-12 sm:py-10 lg:h-[600px] lg:px-16 lg:py-14">
-          <div className="absolute top-8 left-6 z-30 inline-block bg-[#9B7654] px-4 py-2 text-[10px] font-semibold tracking-[0.15em] text-white uppercase sm:top-10 sm:left-12 sm:px-5 sm:py-2.5 sm:text-xs lg:top-14 lg:left-16">
+          <div className="absolute top-8 left-6 z-30 inline-block bg-[#B77938] px-4 py-2 text-[10px] font-semibold tracking-[0.15em] text-white uppercase sm:top-10 sm:left-12 sm:px-5 sm:py-2.5 sm:text-xs lg:top-14 lg:left-16">
             Luxury Scent, Limited Deals
           </div>
           <div className="relative z-20 flex h-full flex-col justify-between pt-14 sm:pt-16">

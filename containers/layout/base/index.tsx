@@ -2,7 +2,7 @@ import { Footer } from './footer';
 import { Header } from './header';
 import { PropsWithChildren } from 'react';
 
-export default function Layout(props: PropsWithChildren) {
+export default function LayouBaset(props: PropsWithChildren) {
   return (
     <>
       <Header />
