@@ -66,7 +66,7 @@ export const OfferProducts = () => {
   }
 
   return (
-    <section className="to-primary-300/30 bg-linear-to-b from-white py-10">
+    <section className="to-primary-300/30 bg-linear-gradient-to-b from-white py-10">
       <div className="container flex flex-col gap-8">
         <div className="flex flex-col items-center gap-4 lg:flex-row lg:justify-between">
           <h2 className="text-center text-xl font-bold lg:text-2xl">

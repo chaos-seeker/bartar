@@ -4,6 +4,7 @@ import { slice } from 'killua';
 export const favoriteSlice = slice({
   key: 'favorite',
   defaultClient: [] as TProduct[],
+  defaultServer: [] as TProduct[],
   obfuscate: true,
   selectors: {
     favoriteIsEmpty: (value) => Boolean(!value.length),

@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingBag, SearchIcon, UserIcon } from 'lucide-react';
+import { useState, FormEvent, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import { useKillua } from 'killua';
 import { cartSlice } from '@/slices/cart';
 import { favoriteSlice } from '@/slices/favorite';
@@ -54,7 +57,7 @@ const Cart = () => {
     >
       <ShoppingBag className="text-greyscale-900 group-hover:text-primary size-5.5" />
       {cartCount > 0 && (
-        <p className="bg-primary group-hover:bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-[1px] text-xs font-medium text-white">
+        <p className="bg-primary group-hover:bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-px text-xs font-medium text-white">
           {cartCount}
         </p>
       )}
@@ -73,7 +76,7 @@ const Favorite = () => {
     >
       <Heart className="text-greyscale-900 group-hover:text-primary size-5.5" />
       {favoriteCount > 0 && (
-        <p className="bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-[1px] text-xs font-medium text-white">
+        <p className="bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-px text-xs font-medium text-white">
           {favoriteCount}
         </p>
       )}
@@ -96,16 +99,38 @@ const Profile = () => {
 };
 
 const Search = () => {
+  const router = useRouter();
+  const [textQuery, setTextQuery] = useQueryState('text');
+  const [searchText, setSearchText] = useState(textQuery || '');
+  useEffect(() => {
+    if (textQuery) {
+      setSearchText(textQuery);
+    }
+  }, [textQuery]);
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    if (searchText.trim()) {
+      const trimmedText = searchText.trim();
+      await setTextQuery(trimmedText);
+      router.push(`/explore?text=${encodeURIComponent(trimmedText)}`);
+    }
+  };
+
   return (
-    <div className="focus-within:border-primary flex h-12 items-center justify-center rounded-full border px-3.5 transition-all lg:w-[400px]">
+    <form
+      onSubmit={handleSearch}
+      className="focus-within:border-primary flex h-12 items-center justify-center rounded-full border px-3.5 transition-all lg:w-[400px]"
+    >
       <input
         type="text"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
         placeholder="search products"
         className="group relative flex w-full items-center justify-center rounded-full border border-none transition-all outline-none"
       />
-      <button>
+      <button type="submit">
         <SearchIcon className="text-greyscale-200 hover:text-primary size-5.5" />
       </button>
-    </div>
+    </form>
   );
 };

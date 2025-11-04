@@ -4,6 +4,7 @@ import { slice } from 'killua';
 export const cartSlice = slice({
   key: 'cart',
   defaultClient: [] as TProduct[],
+  defaultServer: [] as TProduct[],
   obfuscate: true,
   selectors: {
     cartIsEmpty: (value) => Boolean(!value.length),
