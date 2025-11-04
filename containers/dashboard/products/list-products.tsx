@@ -1,13 +1,15 @@
 'use client';
 
 import { getProducts } from '@/actions/dashboard/products/get-products';
+import { deleteProduct } from '@/actions/dashboard/products/delete-product';
 import { cn } from '@/utils/cn';
 import { TProduct } from '@/types/product';
 import { useModal } from '@/hooks/modal';
 import { useQueryState } from 'nuqs';
 import { Edit, Trash2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loading } from '@/components/loading';
+import { toast } from 'react-hot-toast';
 import {
   useReactTable,
   getCoreRowModel,
@@ -16,6 +18,7 @@ import {
   type ColumnDef,
   type CellContext,
 } from '@tanstack/react-table';
+import Image from 'next/image';
 
 export const ListProducts = () => {
   const { data: products = [], isLoading } = useQuery({
@@ -46,7 +49,7 @@ interface ProductsTableProps {
 
 const columnHelper = createColumnHelper<TProduct>();
 
-const ProductsTable = ({ products }: ProductsTableProps) => {
+const ProductsTable = (props: ProductsTableProps) => {
   const columns = [
     columnHelper.accessor('image', {
       header: 'Image',
@@ -63,7 +66,9 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
     columnHelper.accessor('title', {
       header: 'title',
       cell: (info: CellContext<TProduct, string>) => (
-        <span className={cn('text-sm text-gray-900 whitespace-nowrap')}>{info.getValue()}</span>
+        <span className={cn('text-sm whitespace-nowrap text-gray-900')}>
+          {info.getValue()}
+        </span>
       ),
     }),
     columnHelper.accessor('price', {
@@ -94,34 +99,28 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
       cell: (info: CellContext<TProduct, unknown>) => (
         <div className={cn('flex items-center justify-center gap-2')}>
           <EditProductButton productId={info.row.original._id} />
-          <button
-            className={cn(
-              'rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50',
-            )}
-            aria-label="Delete product"
-          >
-            <Trash2 className={cn('h-5 w-5')} />
-          </button>
+          <DeleteProductButton productId={info.row.original._id} />
         </div>
       ),
     }),
   ] as ColumnDef<TProduct>[];
 
   const table = useReactTable({
-    data: products,
+    data: props.products,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  if (products.length === 0) {
+  if (props.products.length === 0) {
     return (
       <div
         className={cn(
-          'rounded-lg border border-gray-200 bg-gray-50 p-8 text-center',
+          'p-8 text-center flex flex-col items-center justify-center gap-4',
         )}
       >
+        <Image src="/images/global/not-found.png" alt="No products found" width={200} height={200} />
         <p className={cn('text-gray-500')}>
-          No products found. Add your first product!
+          No products found.
         </p>
       </div>
     );
@@ -196,6 +195,50 @@ const EditProductButton = (props: EditProductButtonProps) => {
       aria-label="Edit product"
     >
       <Edit className={cn('h-5 w-5')} />
+    </button>
+  );
+};
+
+interface DeleteProductButtonProps {
+  productId: string;
+}
+
+const DeleteProductButton = (props: DeleteProductButtonProps) => {
+  const queryClient = useQueryClient();
+  const deleteProductMutation = useMutation({
+    mutationFn: (id: string) => deleteProduct(id),
+    onSuccess: (response) => {
+      if (response.error) {
+        toast.error(response.error);
+      } else {
+        toast.success(response.message as string);
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.message);
+    },
+  });
+  const handleClick = () => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      deleteProductMutation.mutate(props.productId);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={deleteProductMutation.isPending}
+      className={cn(
+        'rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50',
+      )}
+      aria-label="Delete product"
+    >
+      {deleteProductMutation.isPending ? (
+        <Loading className={cn('h-5 w-5')} />
+      ) : (
+        <Trash2 className={cn('h-5 w-5')} />
+      )}
     </button>
   );
 };

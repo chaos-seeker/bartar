@@ -7,7 +7,7 @@ import { FormImage } from '@/components/form-image';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { addProduct } from '@/actions/dashboard/products/add-product';
 import { toast } from 'react-hot-toast';
 import { Loading } from '@/components/loading';
@@ -29,6 +29,21 @@ export const ModalAddProduct = () => {
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
   });
+  const handleClose = () => {
+    form.reset();
+    modalAddProduct.hide();
+  };
+  useEffect(() => {
+    if (!modalAddProduct.isShow) {
+      form.reset({
+        image: undefined,
+        title: '',
+        price: '',
+        discount: '',
+        stock: '',
+      });
+    }
+  }, [modalAddProduct.isShow, form]);
   const addProductMutation = useMutation({
     mutationFn: async (data: ProductFormData) => {
       let imageBase64: string | null = null;
@@ -58,10 +73,6 @@ export const ModalAddProduct = () => {
       toast.error(error?.message);
     },
   });
-  const handleClose = () => {
-    modalAddProduct.hide();
-    form.reset();
-  };
   const handleImageChange = (file: File | null) => {
     if (!file) return;
     form.setValue('image', file!);
