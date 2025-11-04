@@ -21,8 +21,11 @@ export const ProductCard = (props: ProductCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
-      <Link href={`/products/${props.id}`} className="relative aspect-square w-full">
+    <div className="group relative flex flex-col overflow-hidden bg-white border border-gray-200">
+      <Link
+        href={`/products/${props.id}`}
+        className="relative aspect-square w-full"
+      >
         <div className="relative h-full w-full overflow-hidden bg-gray-100">
           <Image
             src={props.image}
@@ -70,19 +73,15 @@ export const ProductCard = (props: ProductCardProps) => {
                 key={index}
                 className={cn(
                   'text-lg',
-                  index < Math.floor(props.rating)
-                    ? 'text-yellow-400'
-                    : index < props.rating
-                      ? 'text-yellow-400'
-                      : 'text-gray-300',
+                  index < props.rating ? 'text-yellow-400' : 'text-gray-300',
                 )}
               >
-                {index < Math.floor(props.rating) ? '★' : index < props.rating ? '★' : '★'}
+                ★
               </span>
             ))}
           </div>
           <span className="text-greyscale-900 text-sm font-medium">
-            {props.rating.toFixed(2)}
+            {props.rating}
           </span>
           <span className="text-greyscale-400 text-sm">
             ({props.soldCount.toLocaleString()} sold)
@@ -94,14 +93,14 @@ export const ProductCard = (props: ProductCardProps) => {
               ${props.price.toFixed(2)}
             </span>
             {props.originalPrice && (
-              <span className="text-greyscale-400 text-lg line-through">
+              <span className="text-error text-lg line-through">
                 ${props.originalPrice.toFixed(2)}
               </span>
             )}
           </div>
           <button
             className={cn(
-              'hover:bg-primary flex size-10 items-center hover:border-primary justify-center rounded-full border-2 bg-white transition-all hover:text-white',
+              'hover:bg-primary hover:border-primary flex size-10 items-center justify-center rounded-full border-2 bg-white transition-all hover:text-white',
             )}
           >
             <Plus className="size-5" />
