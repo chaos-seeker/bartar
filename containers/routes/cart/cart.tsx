@@ -60,7 +60,7 @@ export function Cart() {
           </div>
           <div className="flex flex-col gap-4">
             <div className="gird-cols-1 grid grid-cols-1 lg:grid-cols-2">
-              <div className="flex flex-col gap-4 px-3 pb-4 lg:px-0 lg:pr-4">
+              <div className="flex flex-col gap-4 px-3 pb-4 lg:px-4">
                 {items.map((item) => (
                   <div
                     key={item._id}
