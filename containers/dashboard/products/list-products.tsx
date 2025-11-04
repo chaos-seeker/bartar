@@ -235,7 +235,7 @@ const DeleteProductButton = (props: DeleteProductButtonProps) => {
       aria-label="Delete product"
     >
       {deleteProductMutation.isPending ? (
-        <Loading className={cn('h-5 w-5')} />
+        <Loading className={cn('h-5 w-5 [&_span]:bg-error [&_span]:size-2.5')} />
       ) : (
         <Trash2 className={cn('h-5 w-5')} />
       )}
