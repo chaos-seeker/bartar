@@ -8,6 +8,14 @@ import { useQueryState } from 'nuqs';
 import { Edit, Trash2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Loading } from '@/components/loading';
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper,
+  type ColumnDef,
+  type CellContext,
+} from '@tanstack/react-table';
 
 export const ListProducts = () => {
   const { data: products = [], isLoading } = useQuery({
@@ -36,7 +44,75 @@ interface ProductsTableProps {
   products: TProduct[];
 }
 
+const columnHelper = createColumnHelper<TProduct>();
+
 const ProductsTable = ({ products }: ProductsTableProps) => {
+  const columns = [
+    columnHelper.accessor('image', {
+      header: 'Image',
+      cell: (info: CellContext<TProduct, string | null | undefined>) => (
+        <div className={cn('relative h-16 w-16 overflow-hidden rounded-lg')}>
+          <img
+            src={info.getValue() || ''}
+            alt={info.row.original.title}
+            className={cn('h-full w-full object-cover')}
+          />
+        </div>
+      ),
+    }),
+    columnHelper.accessor('title', {
+      header: 'title',
+      cell: (info: CellContext<TProduct, string>) => (
+        <span className={cn('text-sm text-gray-900 whitespace-nowrap')}>{info.getValue()}</span>
+      ),
+    }),
+    columnHelper.accessor('price', {
+      header: 'price',
+      cell: (info: CellContext<TProduct, number>) => (
+        <span className={cn('text-sm text-gray-900')}>
+          {info.getValue().toLocaleString()}$
+        </span>
+      ),
+    }),
+    columnHelper.accessor('discount', {
+      header: 'discount',
+      cell: (info: CellContext<TProduct, number | undefined>) => (
+        <span className={cn('text-sm text-gray-900')}>
+          {info.getValue() ? `${info.getValue()}%` : '—'}
+        </span>
+      ),
+    }),
+    columnHelper.accessor('stock', {
+      header: 'stock',
+      cell: (info: CellContext<TProduct, number>) => (
+        <span className={cn('text-sm text-gray-900')}>{info.getValue()}</span>
+      ),
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: 'actions',
+      cell: (info: CellContext<TProduct, unknown>) => (
+        <div className={cn('flex items-center justify-center gap-2')}>
+          <EditProductButton productId={info.row.original._id} />
+          <button
+            className={cn(
+              'rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50',
+            )}
+            aria-label="Delete product"
+          >
+            <Trash2 className={cn('h-5 w-5')} />
+          </button>
+        </div>
+      ),
+    }),
+  ] as ColumnDef<TProduct>[];
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   if (products.length === 0) {
     return (
       <div
@@ -55,125 +131,42 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
     <div className={cn('overflow-x-auto border border-gray-200')}>
       <table className={cn('w-full border-collapse')}>
         <thead>
-          <tr className={cn('bg-gray-50')}>
-            <th
-              className={cn(
-                'border-b border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-700',
-              )}
-            >
-              Image
-            </th>
-            <th
-              className={cn(
-                'border-b border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-700',
-              )}
-            >
-              Title
-            </th>
-            <th
-              className={cn(
-                'border-b border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-700',
-              )}
-            >
-              Price
-            </th>
-            <th
-              className={cn(
-                'border-b border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-700',
-              )}
-            >
-              Discount
-            </th>
-            <th
-              className={cn(
-                'border-b border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-700',
-              )}
-            >
-              Stock
-            </th>
-            <th
-              className={cn(
-                'border-b border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-700',
-              )}
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr
-              key={product._id}
-              className={cn('transition-colors hover:bg-gray-50')}
-            >
-              <td
-                className={cn(
-                  'px-4 py-3',
-                  index !== products.length - 1 && 'border-b border-gray-200',
-                )}
-              >
-                <div
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} className={cn('bg-gray-50')}>
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
                   className={cn(
-                    'relative h-16 w-16 overflow-hidden rounded-lg',
+                    'border-b border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-700',
+                    header.id === 'actions' && 'text-center',
                   )}
                 >
-                  <img
-                    src={product.image!}
-                    alt={product.title}
-                    className={cn('h-full w-full object-cover')}
-                  />
-                </div>
-              </td>
-              <td
-                className={cn(
-                  'px-4 py-3 text-sm text-gray-900',
-                  index !== products.length - 1 && 'border-b border-gray-200',
-                )}
-              >
-                {product.title}
-              </td>
-              <td
-                className={cn(
-                  'px-4 py-3 text-sm text-gray-900',
-                  index !== products.length - 1 && 'border-b border-gray-200',
-                )}
-              >
-                {product.price.toLocaleString()}$
-              </td>
-              <td
-                className={cn(
-                  'px-4 py-3 text-sm text-gray-900',
-                  index !== products.length - 1 && 'border-b border-gray-200',
-                )}
-              >
-                {product.discount ? `${product.discount}%` : '-'}
-              </td>
-              <td
-                className={cn(
-                  'px-4 py-3 text-sm text-gray-900',
-                  index !== products.length - 1 && 'border-b border-gray-200',
-                )}
-              >
-                {product.stock}
-              </td>
-              <td
-                className={cn(
-                  'px-4 py-3',
-                  index !== products.length - 1 && 'border-b border-gray-200',
-                )}
-              >
-                <div className={cn('flex items-center justify-center gap-2')}>
-                  <EditProductButton productId={product._id} />
-                  <button
-                    className={cn(
-                      'rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50',
-                    )}
-                    aria-label="Delete product"
-                  >
-                    <Trash2 className={cn('h-5 w-5')} />
-                  </button>
-                </div>
-              </td>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row, index) => (
+            <tr
+              key={row.id}
+              className={cn(
+                'transition-colors hover:bg-gray-50',
+                index !== table.getRowModel().rows.length - 1 &&
+                  'border-b border-gray-200',
+              )}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id} className={cn('px-4 py-3')}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -186,12 +179,11 @@ interface EditProductButtonProps {
   productId: string;
 }
 
-const EditProductButton = ({ productId }: EditProductButtonProps) => {
+const EditProductButton = (props: EditProductButtonProps) => {
   const modalEditProduct = useModal('edit-product');
   const [, setProductId] = useQueryState('productId');
-
   const handleClick = () => {
-    setProductId(productId);
+    setProductId(props.productId);
     modalEditProduct.show();
   };
 
