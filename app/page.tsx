@@ -1,9 +1,9 @@
-import { Hero } from '@/containers/home/hero';
-import { Categories } from '@/containers/home/categories';
-import { OfferProducts } from '@/containers/home/offer-products';
-import { Perfume } from '@/containers/home/perfume';
-import { Gadget } from '@/containers/home/gadget';
-import { Home as HomeSection } from '@/containers/home/home';
+import { Hero } from '@/containers/routes/home/hero';
+import { Categories } from '@/containers/routes/home/categories';
+import { OfferProducts } from '@/containers/routes/home/offer-products';
+import { Perfume } from '@/containers/routes/home/perfume';
+import { Gadget } from '@/containers/routes/home/gadget';
+import { Home as HomeSection } from '@/containers/routes/home/home';
 import { AnimatedSection } from '@/components/animated-section';
 
 export default function Page() {

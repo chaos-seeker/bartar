@@ -1,4 +1,4 @@
-import { Form } from '@/containers/auth/form';
+import { Form } from '@/containers/routes/auth/form';
 
 export default function Page() {
   return <Form />;

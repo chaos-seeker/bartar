@@ -18,17 +18,11 @@ export function Header() {
       <div className="container flex flex-col gap-4 border-b py-5 lg:flex-row">
         <div className="flex w-full items-center justify-between">
           <Logo />
-          <div className="hidden lg:block">
-            <Search />
-          </div>
           <div className="flex items-center gap-3">
             <Favorite />
             <Cart />
             <Profile />
           </div>
-        </div>
-        <div className="lg:hidden">
-          <Search />
         </div>
       </div>
     </header>
@@ -110,42 +104,5 @@ const Profile = () => {
         {isAuthenticated ? 'logout' : 'login'}
       </p>
     </button>
-  );
-};
-
-const Search = () => {
-  const router = useRouter();
-  const [textQuery, setTextQuery] = useQueryState('text');
-  const [searchText, setSearchText] = useState(textQuery || '');
-  useEffect(() => {
-    if (textQuery) {
-      setSearchText(textQuery);
-    }
-  }, [textQuery]);
-  const handleSearch = async (e: FormEvent) => {
-    e.preventDefault();
-    if (searchText.trim()) {
-      const trimmedText = searchText.trim();
-      await setTextQuery(trimmedText);
-      router.push(`/explore?text=${encodeURIComponent(trimmedText)}`);
-    }
-  };
-
-  return (
-    <form
-      onSubmit={handleSearch}
-      className="focus-within:border-primary flex h-12 items-center justify-center rounded-full border px-3.5 transition-all lg:w-[400px]"
-    >
-      <input
-        type="text"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        placeholder="search products"
-        className="group relative flex w-full items-center justify-center rounded-full border border-none transition-all outline-none"
-      />
-      <button type="submit">
-        <SearchIcon className="text-greyscale-200 hover:text-primary size-5.5" />
-      </button>
-    </form>
   );
 };

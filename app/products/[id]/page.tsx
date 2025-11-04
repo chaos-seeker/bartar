@@ -1,6 +1,6 @@
 import { getProduct } from "@/actions/dashboard/products/get-product";
-import { Product } from "@/containers/product/product";
-import { SimilarItems } from "@/containers/product/similar.-items";
+import { Product } from "@/containers/routes/product/product";
+import { SimilarItems } from "@/containers/routes/product/similar.-items";
 
 interface Params {
   id: string;

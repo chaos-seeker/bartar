@@ -1,4 +1,4 @@
-import { ListOrders } from '@/containers/dashboard/orders/list-orders';
+import { ListOrders } from '@/containers/routes/dashboard/orders/list-orders';
 
 export default function Page() {
   return (
