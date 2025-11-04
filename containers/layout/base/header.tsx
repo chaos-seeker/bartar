@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingBag, SearchIcon, UserIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useKillua } from 'killua';
+import { cartSlice } from '@/slices/cart';
+import { favoriteSlice } from '@/slices/favorite';
 
 export function Header() {
   return (
@@ -42,23 +44,27 @@ const Logo = () => {
 };
 
 const Cart = () => {
-  const [cartCount, setCartCount] = useState(0);
+  const cart = useKillua(cartSlice);
+  const cartCount = cart.selectors.totalCartCount();
 
   return (
     <Link
-      href="/profile/favorites"
+      href="/cart"
       className="hover:border-primary group relative flex size-11 items-center justify-center rounded-full border p-0.5 transition-all"
     >
       <ShoppingBag className="text-greyscale-900 group-hover:text-primary size-5.5" />
-      <p className="bg-primary group-hover:bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-[1px] text-xs font-medium text-white">
-        {cartCount}
-      </p>
+      {cartCount > 0 && (
+        <p className="bg-primary group-hover:bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-[1px] text-xs font-medium text-white">
+          {cartCount}
+        </p>
+      )}
     </Link>
   );
 };
 
 const Favorite = () => {
-  const [favoriteCount, setFavoriteCount] = useState(0);
+  const favorite = useKillua(favoriteSlice);
+  const favoriteCount = favorite.selectors.totalFavoriteCount();
 
   return (
     <Link
@@ -66,9 +72,11 @@ const Favorite = () => {
       className="hover:border-primary group relative flex size-11 items-center justify-center rounded-full border p-0.5 transition-all"
     >
       <Heart className="text-greyscale-900 group-hover:text-primary size-5.5" />
-      <p className="bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-[1px] text-xs font-medium text-white">
-        {favoriteCount}
-      </p>
+      {favoriteCount > 0 && (
+        <p className="bg-primary absolute -top-1 -right-1.5 flex items-center justify-center rounded-full border border-white px-[7px] py-[1px] text-xs font-medium text-white">
+          {favoriteCount}
+        </p>
+      )}
     </Link>
   );
 };
@@ -89,7 +97,7 @@ const Profile = () => {
 
 const Search = () => {
   return (
-    <div className="focus-within:border-primary flex h-12 items-center justify-center rounded-full border px-3 px-3.5 transition-all lg:w-[400px]">
+    <div className="focus-within:border-primary flex h-12 items-center justify-center rounded-full border px-3.5 transition-all lg:w-[400px]">
       <input
         type="text"
         placeholder="search products"

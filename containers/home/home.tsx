@@ -27,7 +27,7 @@ export const Home = () => {
 
   if (fetchProducts.isLoading) {
     return (
-      <div className="my-10 flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <Loading />
       </div>
     );
@@ -139,13 +139,11 @@ export const Home = () => {
             }}
             className="w-full pb-4"
           >
-            {
-              fetchProducts.data?.map((product: TProduct) => (
-                <SwiperSlide key={product._id}>
-                  <ProductCard {...product} />
-                </SwiperSlide>
-              ))
-            }
+            {fetchProducts.data?.map((product: TProduct) => (
+              <SwiperSlide key={product._id}>
+                <ProductCard {...product} />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
       </div>
