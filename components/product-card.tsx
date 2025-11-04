@@ -11,9 +11,10 @@ import { TProduct } from '@/types/product';
 import toast from 'react-hot-toast';
 
 export const ProductCard = (props: TProduct) => {
-  const price = parseFloat(props.price);
-  const discount = props.discount ? parseFloat(props.discount) : 0;
-  const originalPrice = discount > 0 ? price / (1 - discount / 100) : null;
+  const basePrice = Number(props.price) || 0;
+  const discount = props.discount ? Number(props.discount) : 0;
+  const discountedPrice =
+    discount > 0 ? basePrice - (basePrice * discount) / 100 : basePrice;
   const cart = useKillua(cartSlice);
   const favorite = useKillua(favoriteSlice);
   const isInCart = cart.selectors.isItemInCart(props._id);
@@ -92,11 +93,11 @@ export const ProductCard = (props: TProduct) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-greyscale-900 text-lg font-bold">
-              ${price.toFixed(2)}
+              ${discountedPrice.toFixed(2)}
             </span>
-            {originalPrice && (
+            {discount > 0 && (
               <span className="text-error lg:text-mdp line-through">
-                ${originalPrice.toFixed(2)}
+                ${basePrice.toFixed(2)}
               </span>
             )}
           </div>

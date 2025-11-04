@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loading } from '@/components/loading';
 import toast from 'react-hot-toast';
-import { loginOrRegister } from '@/app/actions/auth/login-or-register';
+import { loginOrRegister } from '@/actions/auth/login-or-register';
 import { useRouter } from 'next/navigation';
 import { useKillua } from 'killua';
 import { userSlice } from '@/slices/user';
@@ -42,10 +42,10 @@ export const Form = () => {
   };
 
   return (
-    <section className="container flex h-dvh items-center justify-center bg-greyscale-10">
+    <section className="container flex h-dvh items-center justify-center">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto w-full max-w-sm space-y-4 bg-white p-4"
+        className="mx-auto w-full max-w-sm space-y-4 bg-white p-4 border"
       >
         <Controller
           control={form.control}
