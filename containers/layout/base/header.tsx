@@ -9,6 +9,7 @@ import { useQueryState } from 'nuqs';
 import { useKillua } from 'killua';
 import { cartSlice } from '@/slices/cart';
 import { favoriteSlice } from '@/slices/favorite';
+import { userSlice } from '@/slices/user';
 
 export function Header() {
   return (
@@ -85,14 +86,18 @@ const Favorite = () => {
 };
 
 const Profile = () => {
+  const user = useKillua(userSlice);
+  const isAuthenticated = user.selectors.isAuthenticated();
+  const username = user.selectors.getUsername();
+  
   return (
     <Link
-      href="/auth"
+      href={isAuthenticated ? '/profile' : '/auth'}
       className="hover:border-primary group relative flex size-11 items-center justify-center gap-1 rounded-full border py-2 lg:px-4 transition-all lg:h-11 lg:w-auto"
     >
       <UserIcon className="text-greyscale-900 group-hover:text-primary size-5.5" />
       <p className="group-hover:text-primary hidden font-medium lg:block">
-        login
+        {isAuthenticated ? username : 'login'}
       </p>
     </Link>
   );
