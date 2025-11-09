@@ -1,22 +1,27 @@
-'use client';
 
 import type { Metadata } from 'next';
 import { Archivo } from 'next/font/google';
 import './globals.css';
 import LayoutBase from '@/containers/layout/base';
 import { PropsWithChildren } from 'react';
-import { usePathname } from 'next/navigation';
 import LayouDashboard from '@/containers/layout/dashboard';
 import { Providers } from './providers';
 import { ModalWelcome } from '@/containers/layout/base/modal-welcome';
+import { headers } from 'next/headers';
 
 const archivo = Archivo({
   variable: '--font-archivo',
   subsets: ['latin'],
 });
 
-export default function RootLayout(props: PropsWithChildren) {
-  const pathname = usePathname();
+const metadata: Metadata = {
+  title: 'bartar',
+  description: 'e-commerce website',
+};
+
+export default async function RootLayout(props: PropsWithChildren) {
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname')!;
 
   return (
     <html lang="en">
