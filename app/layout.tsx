@@ -6,7 +6,6 @@ import LayoutBase from '@/containers/layout/base';
 import { PropsWithChildren } from 'react';
 import LayouDashboard from '@/containers/layout/dashboard';
 import { Providers } from './providers';
-import { ModalWelcome } from '@/containers/layout/base/modal-welcome';
 import { headers } from 'next/headers';
 
 const archivo = Archivo({
@@ -37,7 +36,6 @@ export default async function RootLayout(props: PropsWithChildren) {
             <LayouDashboard>{props.children}</LayouDashboard>
           ) : (
             <LayoutBase>
-              <ModalWelcome />
               {props.children}
             </LayoutBase>
           )}

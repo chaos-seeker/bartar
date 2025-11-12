@@ -8,30 +8,18 @@ import type { Swiper as SwiperType } from 'swiper';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import { getProducts } from '@/actions/dashboard/products/get-products';
 import { TProduct } from '@/types/product';
-import { Loading } from '@/components/loading';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-export const Perfume = () => {
+interface PerfumeProps {
+  products: TProduct[];
+}
+
+export const Perfume = (props: PerfumeProps) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-
-  const fetchProducts = useQuery({
-    queryKey: ['products'],
-    queryFn: getProducts,
-  });
-
-  if (fetchProducts.isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
 
   return (
     <section className="bg-white">
@@ -139,7 +127,7 @@ export const Perfume = () => {
             }}
             className="w-full pb-4"
           >
-            {fetchProducts.data?.map((product: TProduct) => (
+            {props.products.map((product: TProduct) => (
               <SwiperSlide key={product._id}>
                 <ProductCard {...product} />
               </SwiperSlide>

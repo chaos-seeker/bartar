@@ -6,26 +6,22 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { getProducts } from '@/actions/dashboard/products/get-products';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { TProduct } from '@/types/product';
-import { Loading } from '@/components/loading';
 
-export const OfferProducts = () => {
+interface OfferProductsProps {
+  products: TProduct[];
+}
+
+export const OfferProducts = (props: OfferProductsProps) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
     seconds: 0,
-  });
-
-  const fetchProducts = useQuery({
-    queryKey: ['products'],
-    queryFn: getProducts,
   });
 
   useEffect(() => {
@@ -56,14 +52,6 @@ export const OfferProducts = () => {
   const formatTime = (time: number) => {
     return time.toString().padStart(2, '0');
   };
-
-  if (fetchProducts.isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
 
   return (
     <section className="to-primary-300/30 bg-linear-gradient-to-b from-white py-10">
@@ -103,7 +91,7 @@ export const OfferProducts = () => {
           }}
           className="w-full"
         >
-          {fetchProducts.data?.map((product: TProduct) => (
+          {props.products.map((product: TProduct) => (
             <SwiperSlide key={product._id}>
               <ProductCard {...product} />
             </SwiperSlide>
